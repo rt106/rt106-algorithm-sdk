@@ -1,0 +1,38 @@
+{
+    "name" : "nanalytic2",
+    "version" : "v1.0.0",
+    "queue" : "nanalytic2--v1_0_0",
+    "parameters" : {
+        "inputSeries" : {
+            "label" : "Input Series",
+            "description" : "The series upon which the algorithm acts.",
+            "type" : "series",
+            "default" : ""
+        },
+        "threshold" : {
+            "label" : "threshold #2",
+            "description" : "This is an example of a parameter.",
+            "type" : "number",
+            "default" : 0
+        }
+    },
+    "results" : {
+        "outputSeries" : {
+            "label" : "Output Series",
+            "description" : "The new series the algorithm produces.",
+            "type" : "series"
+        },
+        "calculatedValue" : {
+            "label" : "Calculated Value #2",
+            "description" : "A value calculated by the algorithm.",
+            "type" : "number"
+        }
+    },
+    "api" : {
+	     "context" : "none"
+    },
+    "doc" : {
+	     "short" : "A short bit of documentation",
+	      "full" : "Full documentation"
+    }
+}
