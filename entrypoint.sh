@@ -1,4 +1,5 @@
 #!/bin/sh
+# Copyright (c) General Electric Company, 2017.  All rights reserved.
 
 /usr/bin/python ./rt106GenericAdaptorREST.py & sleep 3
 

@@ -1,6 +1,9 @@
 # rt106-algorithm-sdk
 [![Build Status](http://ideker.crd.ge.com:8888/buildStatus/icon?job=rt106/rt106-algorithm-sdk/master)](http://ideker.crd.ge.com:8888/job/rt106/job/rt106-algorithm-sdk/job/master/)
 
+_Copyright (c) General Electric Company, 2017.  All rights reserved._
+
+
 **Software Development Kit for adding new algorithms to Rt 106**
 
 This git project contains code and guidelines to simplify adding new algorithms to Rt 106.

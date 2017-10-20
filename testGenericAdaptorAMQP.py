@@ -1,3 +1,5 @@
+# Copyright (c) General Electric Company, 2017.  All rights reserved.
+
 # Prototype code for testing rt106GenericAdaptorAMQP.py
 
 import unittest,json,requests,uuid,os,time,logging

@@ -1,3 +1,4 @@
+# Copyright (c) General Electric Company, 2017.  All rights reserved.
 # Rt106
 # Template for integrating a new algorithm.
 # This is one of two required source files that need to be adapted for integrating an algorithm:
