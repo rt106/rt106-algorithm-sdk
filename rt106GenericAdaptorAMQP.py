@@ -1,4 +1,5 @@
 # Copyright (c) General Electric Company, 2017.  All rights reserved.
+
 #
 # Rt 106 Generic Adaptor.
 #
@@ -121,6 +122,17 @@ class DataStore:
         path = json.loads(response.text)
         return path
 
+    # return the full path for a result pathology image.
+    def get_pathology_result_image_path(self, slide, region, pipelineid, execid):
+        pathology_path_request = '%s/v1/pathology/slides/%s/regions/%s/results/%s/steps/%s/instances' % (self.url, slide, region, pipelineid, execid)
+        logging.info('http request - %s' % pathology_path_request)
+        response = requests.get(pathology_path_request)
+        if response.status_code != requests.codes.ok:
+            logging.error('request failed (%d) - %s' % (response.status_code, pathology_path_request))
+            return response.status_code
+        paths = json.loads(response.text)
+        return paths[0]
+
     # get an instance, which could be an image file or other type of file.
     def get_instance(self,path,filedir,filename,format):
         retrieve_instance_request = '%s/v1/instance%s/%s' % (self.url,path,format)
@@ -152,8 +164,8 @@ class DataStore:
         return json.dumps({'error': 'error posting instance'})
 
     # retrieve images from all channels for a region, each channel contains one image
-    def retrieve_multi_channel_pathology_image(self,input_path,output_dir):
-        channel_list_request = '%s/v1/pathology/channel/list/%s' % (self.url,input_path)
+    def retrieve_multi_channel_pathology_image(self,slide,region,output_dir):
+        channel_list_request = '%s/v1/pathology/slides/%s/regions/%s/channels' % (self.url,slide,region)
         logging.debug('http request - %s' % channel_list_request)
         response = requests.get(channel_list_request)
         logging.debug('retrieve_multi_channel_pathology_image response: %s' % response.content)
@@ -163,8 +175,8 @@ class DataStore:
         channels = json.loads(response.text)
         for channel in channels:
             filename = '%s.tiff' % channel
-            image_path = input_path + '/source/' + channel
-            self.retrieve_pathology_image(image_path, output_dir, filename)
+            image_path = self.get_pathology_primary_path(slide, region, channel)
+            self.get_instance(image_path, output_dir, filename, 'tiff16')
         return response.status_code
   
 broker_ip = args.broker
