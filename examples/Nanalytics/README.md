@@ -1,4 +1,5 @@
 # Nanalytics
+ _Copyright (c) General Electric Company, 2017.  All rights reserved._
 
 Example of a container providing multiple analytics.
 

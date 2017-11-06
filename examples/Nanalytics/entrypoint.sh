@@ -1,4 +1,5 @@
 #!/bin/sh
+# Copyright (c) General Electric Company, 2017.  All rights reserved.
 
 /usr/bin/python ./rt106GenericAdaptorREST.py --module nanalytic1 --port 7106 &
 /usr/bin/python ./rt106GenericAdaptorAMQP.py  --module nanalytic1 --broker rabbitmq --dicom datastore:5106 &

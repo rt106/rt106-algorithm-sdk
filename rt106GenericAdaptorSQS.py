@@ -1,3 +1,5 @@
+# Copyright (c) General Electric Company, 2017.  All rights reserved.
+
 import requests, tarfile, logging, json, uuid, time, signal, os, argparse, glob, pkg_resources
 import Queue, threading, sched
 import boto3, botocore
