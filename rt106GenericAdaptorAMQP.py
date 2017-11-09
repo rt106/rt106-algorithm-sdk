@@ -127,9 +127,13 @@ class DataStore:
         pathology_path_request = '%s/v1/pathology/slides/%s/regions/%s/results/%s/steps/%s/instances' % (self.url, slide, region, pipelineid, execid)
         logging.info('http request - %s' % pathology_path_request)
         response = requests.get(pathology_path_request)
+        logging.info('http response code - %s, response text - %s' % (response.status_code, response.text))
         if response.status_code != requests.codes.ok:
             logging.error('request failed (%d) - %s' % (response.status_code, pathology_path_request))
             return response.status_code
+        if not json.loads(response.text):
+            logging.error('request failed, empty list returned - %s' % pathology_path_request)
+            return 404
         paths = json.loads(response.text)
         return paths[0]
 
