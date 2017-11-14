@@ -31,6 +31,11 @@ def run_algorithm(datastore, context):
     for f in glob.glob('/rt106/input/*') + glob.glob('/rt106/output/*'):
         os.remove(f)
 
+    # Make sure we have received the needed input.  We can't do anything without the inputSeries.
+    if (context['inputSeries'] == "" or not context['inputSeries']):
+        status = "ERROR_NO_INPUT_SERIES"
+        return { 'result' : {}, 'status' : status }
+
     input_path = context['inputSeries']
     #logging.info('input_path: %r' % input_path)
     response_retrieve = datastore.retrieve_series(input_path,'/rt106/input')
