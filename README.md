@@ -1,5 +1,6 @@
 # rt106-algorithm-sdk
-[![Build Status](http://ideker.crd.ge.com:8888/buildStatus/icon?job=rt106/rt106-algorithm-sdk/master)](http://ideker.crd.ge.com:8888/job/rt106/job/rt106-algorithm-sdk/job/master/)
+
+[![CircleCI](https://circleci.com/gh/rt106/rt106-algorithm-sdk.svg?style=svg)](https://circleci.com/gh/rt106/rt106-algorithm-sdk)
 
 _Copyright (c) General Electric Company, 2017.  All rights reserved._
 
