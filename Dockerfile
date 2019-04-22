@@ -1,12 +1,12 @@
-# Copyright (c) General Electric Company, 2017.  All rights reserved.
-FROM debian:jessie-slim
+# Copyright (c) General Electric Company, 2019.  All rights reserved.
+FROM debian:jessie
 
 # install dependencies
 RUN buildDeps='python-pip' \
     && set -x \
     && apt-get -y update && apt-get install -y $buildDeps --no-install-recommends \
     && pip install --upgrade pip && hash -r \
-    && pip install flask pika boto3 requests junit-xml pytest-cov \
+    && pip install flask pika==0.9.14 boto3 requests==2.19 junit-xml pytest-cov \
     && pip install --upgrade setuptools
 
 # install SDK
