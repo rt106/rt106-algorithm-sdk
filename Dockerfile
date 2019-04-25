@@ -1,13 +1,14 @@
 # Copyright (c) General Electric Company, 2019.  All rights reserved.
-FROM debian:jessie
+#FROM debian:jessie
+FROM debian:stretch
 
 # install dependencies
 RUN buildDeps='python-pip' \
     && set -x \
     && apt-get -y update && apt-get install -y $buildDeps --no-install-recommends \
     && pip install --upgrade pip && hash -r \
-    && pip install flask pika==0.9.14 boto3 requests==2.19 junit-xml pytest-cov \
-    && pip install --upgrade setuptools
+    && pip install --upgrade setuptools \
+    && pip install flask pika==0.9.14 boto3 requests==2.19 junit-xml pytest-cov
 
 # install SDK
 ADD rt106GenericAdaptorSQS.py rt106GenericAdaptorAMQP.py rt106GenericAdaptorREST.py rt106SpecificAdaptorCode.py rt106SpecificAdaptorDefinitions.json entrypoint.sh testGenericAdaptorAPIs.py testGenericAdaptorAMQP.py /rt106/
