@@ -201,6 +201,10 @@ else:
 def on_request(channel, method, properties, body):
     run = json.loads(body)
     logging.info('run: %r' % run)
+    logging.info('properties:')
+    logging.info(properties)
+    logging.info('properties.headers:')
+    logging.info(properties.headers)
     hc_pipeline_id = run['header']['pipelineId']
     hc_execution_id = run['header']['executionId']
     hc_creation_time = properties.headers.get('creationTime')
@@ -225,10 +229,12 @@ def on_request(channel, method, properties, body):
         'status': algorithm_result['status']
     }
 
-    channel.basic_publish(exchange='',
+    logging.debug('** basic_publish routing_key: %r' % properties.reply_to)
+    r = channel.basic_publish(exchange='',
                           routing_key=properties.reply_to,
                           properties=pika.BasicProperties(correlation_id=properties.correlation_id),
                           body=json.dumps(response_body))
+    logging.debug(r)
     channel.basic_ack(delivery_tag=method.delivery_tag)
 
 def start_req_queue():
@@ -239,22 +245,31 @@ def start_req_queue():
     queue = adaptor_definitions['queue']
     while not queuing_up:
         logging.info("Request queue is " + queue)
+        logging.info("broker_ip is " + broker_ip)
         try:
             connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_ip))
+            logging.info("queue 1")
             channel = connection.channel()
+            logging.info("queue 2")
             channel.queue_declare(queue=queue, durable=True)
+            logging.info("queue 3")
             channel.basic_qos(prefetch_count=1)
-            channel.basic_consume(on_request,queue=queue, no_ack=False)
+            logging.info("queue 4")
+            channel.basic_consume(on_message_callback=on_request,queue=queue, auto_ack=False)
+            logging.info("queue 5")
             queuing_up = True
+            logging.info("queue 6")
             logging.info('Queues are now available.')
-        except:
+            logging.info("queue 7")
+        except Exception as e:
+            logging.info("The error is: " + str(e))
             logging.info('Queues are not available yet. Backing off.')
             time.sleep(5)
 
     logging.debug('[*] waiting for messages.')
     try:
         channel.start_consuming()
-    except pika.exceptions.ConnectionClosed, e:
+    except pika.exceptions.ConnectionClosed as e:
         logging.info('client connection is closed')
 
 logging.basicConfig(format='%(levelname)s:%(name)s %(message)s', level=logging.DEBUG)
