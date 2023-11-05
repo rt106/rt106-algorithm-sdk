@@ -1,9 +1,9 @@
 #!/bin/bash
 # Copyright (c) General Electric Company, 2017.  All rights reserved.
 
-#echo ""
-#echo "Removing algorithm container."
-#docker rm rt106_algorithmtemplate_1
+echo ""
+echo "Removing algorithm container."
+docker rm rt106_algorithmtemplate_1
 
 echo ""
 echo "Removing algorithm image."
