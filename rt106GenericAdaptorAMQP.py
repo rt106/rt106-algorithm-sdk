@@ -239,22 +239,24 @@ def start_req_queue():
     queue = adaptor_definitions['queue']
     while not queuing_up:
         logging.info("Request queue is " + queue)
+        logging.info("broker_ip is " + broker_ip)
         try:
             connection = pika.BlockingConnection(pika.ConnectionParameters(host=broker_ip))
             channel = connection.channel()
             channel.queue_declare(queue=queue, durable=True)
             channel.basic_qos(prefetch_count=1)
-            channel.basic_consume(on_request,queue=queue, no_ack=False)
+            channel.basic_consume(on_message_callback=on_request,queue=queue, auto_ack=False)
             queuing_up = True
             logging.info('Queues are now available.')
-        except:
+        except Exception as e:
+            logging.info("The error is: " + str(e))
             logging.info('Queues are not available yet. Backing off.')
             time.sleep(5)
 
     logging.debug('[*] waiting for messages.')
     try:
         channel.start_consuming()
-    except pika.exceptions.ConnectionClosed, e:
+    except pika.exceptions.ConnectionClosed as e:
         logging.info('client connection is closed')
 
 logging.basicConfig(format='%(levelname)s:%(name)s %(message)s', level=logging.DEBUG)
