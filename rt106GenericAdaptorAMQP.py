@@ -254,13 +254,9 @@ def start_req_queue():
             channel.queue_declare(queue=queue, durable=True)
             logging.info("queue 3")
             channel.basic_qos(prefetch_count=1)
-            logging.info("queue 4")
             channel.basic_consume(on_message_callback=on_request,queue=queue, auto_ack=False)
-            logging.info("queue 5")
             queuing_up = True
-            logging.info("queue 6")
             logging.info('Queues are now available.')
-            logging.info("queue 7")
         except Exception as e:
             logging.info("The error is: " + str(e))
             logging.info('Queues are not available yet. Backing off.')
