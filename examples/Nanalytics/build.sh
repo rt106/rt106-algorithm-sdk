@@ -7,11 +7,11 @@
 
 echo ""
 echo "Removing algorithm image."
-docker rmi rt106/rt106-algorithm-sdk
+docker rmi rt106/rt106-nanalytc-example
 
 echo ""
 echo "Building algorithm image."
-docker build -t rt106/rt106-algorithm-sdk --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy .
+docker build -t rt106/rt106-nanalytic-example --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy .
 
 echo ""
 docker images
