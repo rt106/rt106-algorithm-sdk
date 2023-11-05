@@ -104,3 +104,6 @@ Required fields include:
 * image - name of your Docker image
 * ports - include "7106" as the internal port used by the adaptor.  Don't provide an externally-mapped port.  Docker will assign an external port that Registrator can find.
 * environment - SERVICE_NAME needs to be set to the name of your new analytic service.  SERVICE_TAGS must be set to 'analytic'.
+
+*** Test edit. ***
+
