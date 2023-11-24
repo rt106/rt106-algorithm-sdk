@@ -70,6 +70,22 @@ class DataStore:
         output_path = json_response['path']+'/'+ str(uuid.uuid4())
         return output_path
 
+    # retrieve a result radiology path location.  (i.e.  This is the directory without file name.)
+    def get_radiology_result_path(self,input_path,pipeline,step,tag):
+        inputs = input_path.split('/')
+        patient = inputs[inputs.index('Patients')+1]
+        study = inputs[inputs.index('Imaging')+1]
+        series = inputs[inputs.index('Imaging')+2]
+        path_request = '%s/v1/patients/%s/results/pipeline/%s/steps/%s/tag/%s/imaging/%s/%s' % (self.url,patient,pipeline,step,tag,study,series)
+        logging.info('http request - %s' % path_request)
+        response = requests.get(path_request)
+        if response.status_code != requests.codes.ok :
+            logging.error('request failed (%d) - %s' % (response.status_code,path_request))
+            return response.status_code
+        json_response = json.loads(response.text)
+        output_path = json_response['path']
+        return output_path
+
     def upload_series(self,series_path,input_dir):
         tar = tarfile.open('/tmp/output.tar','w')
         for f in glob.glob('%s/*' % input_dir):
