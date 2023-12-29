@@ -76,7 +76,7 @@ class DataStore:
         patient = inputs[inputs.index('Patients')+1]
         study = inputs[inputs.index('Imaging')+1]
         series = inputs[inputs.index('Imaging')+2]
-        path_request = '%s/v1/patients/%s/results/pipeline/%s/steps/%s/tag/%s/imaging/%s/%s' % (self.url,patient,pipeline,step,tag,study,series)
+        path_request = '%s/v1/patients/%s/results/executions/%s/steps/%s/tags/%s/imaging/studies/%s/series/%s' % (self.url,patient,pipeline,step,tag,study,series)
         logging.info('http request - %s' % path_request)
         response = requests.get(path_request)
         if response.status_code != requests.codes.ok :
