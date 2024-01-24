@@ -86,13 +86,40 @@ class DataStore:
         output_path = json_response['path']
         return output_path
 
-    def upload_series(self,series_path,input_dir):
+    def radiology_result_execution_exists(self,input_path,executionID):
+        inputs = input_path.split('/')
+        patient = inputs[inputs.index('Patients')+1]
+        study = inputs[inputs.index('Imaging')+1]
+        series = inputs[inputs.index('Imaging')+2]
+        path_request = '%s/v1/patients/%s/results/executions/%s' % (self.url,patient,executionID)
+        logging.info('*** http request - %s' % path_request)
+        response = requests.get(path_request)
+        logging.info('*** http response - %r' % response)
+        logging.info('*** http JSON response - %r' % response.json())
+        ret_value = True; # Start by assuming the execution exists.
+        steps = []
+        try:
+            steps = response.json().get('steps')
+        except:
+            # There are no steps, so the executionID does not exist.
+            logging.info('*** radiology_result_execution_exists():  Error returned from REST call.')
+            ret_value = False;
+        if (len(steps) == 0):
+            # There is a steps field, but nothing in it.
+            ret_value = False;
+        logging.info('*** radiology_result_execution_exists(): ret_value is %r, steps is %r' % (ret_value, steps))
+        return ret_value
+
+    def upload_series(self,series_path,input_dir,force=False):
         tar = tarfile.open('/tmp/output.tar','w')
         for f in glob.glob('%s/*' % input_dir):
             filename = os.path.basename(f)
             tar.add(f,arcname=filename)
         tar.close()
-        upload_series_request = self.url + '/v1/series' + series_path + '/tar'
+        if (force):
+            upload_series_request = self.url + '/v1/series' + series_path + '/tar/force'
+        else:
+            upload_series_request = self.url + '/v1/series' + series_path + '/tar'
         logging.debug('http post request - %s' % upload_series_request)
         archive = { 'file' : open('/tmp/output.tar' ,'rb') }
         response = requests.post(upload_series_request,files=archive)
