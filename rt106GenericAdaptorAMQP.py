@@ -96,18 +96,20 @@ class DataStore:
         response = requests.get(path_request)
         logging.info('*** http response - %r' % response)
         logging.info('*** http JSON response - %r' % response.json())
+
         ret_value = True; # Start by assuming the execution exists.
-        steps = []
-        try:
-            steps = response.json().get('steps')
-        except:
-            # There are no steps, so the executionID does not exist.
-            logging.info('*** radiology_result_execution_exists():  Error returned from REST call.')
-            ret_value = False;
-        if (len(steps) == 0):
-            # There is a steps field, but nothing in it.
-            ret_value = False;
-        logging.info('*** radiology_result_execution_exists(): ret_value is %r, steps is %r' % (ret_value, steps))
+        if 'error' in response.json():
+            logging.info('*** error returned from REST call')
+            ret_value = False
+        elif 'steps' in response.json():
+            logging.info('*** steps returned from REST call')
+            if (len(response.json().get('steps')) == 0):
+                logging.info('*** length of steps is 0')
+                ret_value = False;
+        else:
+            raise Exception("The return value from REST call should either be an 'error' or list 'steps'.")
+
+        logging.info('*** radiology_result_execution_exists(): ret_value is %r' % ret_value)
         return ret_value
 
     def upload_series(self,series_path,input_dir,force=False):
