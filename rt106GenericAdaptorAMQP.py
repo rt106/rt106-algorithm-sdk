@@ -86,6 +86,64 @@ class DataStore:
         output_path = json_response['path']
         return output_path
 
+    def get_primary_data_formats(self,patient,exam,element):
+        format_request = '%s/v1/patients/%s/exams/%s/elements/%s/formats' % (self.url,patient,exam,element)
+        logging.info('http request - %s' % format_request)
+        response = requests.get(format_request)
+        if response.status_code != requests.codes.ok :
+            logging.error('request failed (%d) - %s' % (response.status_code,format_request))
+            return response.status_code
+        json_response = json.loads(response.text)
+        output_formats = json_response['formats']
+        return output_formats
+
+    def get_primary_data_path_single_file(self,patient,exam,element,format):
+        path_request = '%s/v1/patients/%s/exams/%s/elements/%s/formats/%s' % (self.url,patient,exam,element,format)
+        logging.info('http request - %s' % path_request)
+        response = requests.get(path_request)
+        if response.status_code != requests.codes.ok :
+            logging.error('request failed (%d) - %s' % (response.status_code,path_request))
+            return response.status_code
+        json_response = json.loads(response.text)
+        output_path = json_response['path']
+        output_file = json_response['filename']
+        return {'path':output_path,'filename':output_file}
+
+    def get_derived_data_root_path(self,patient,execid,analytic):
+        path_request = '%s/v1/patients/%s/executions/%s/analytics/%s/results/root' % (self.url,patient,execid,analytic)
+        logging.info('http request - %s' % path_request)
+        response = requests.get(path_request)
+        if response.status_code != requests.codes.ok :
+            logging.error('request failed (%d) - %s' % (response.status_code,path_request))
+            return response.status_code
+        json_response = json.loads(response.text)
+        output_path = json_response['path']
+        return output_path
+
+    def get_derived_data_formats(self,patient,execid,analytic,result):
+        format_request = '%s/v1/patients/%s/executions/%s/analytics/%s/results/%s/formats' % (self.url,patient,execid,analytic,result)
+        logging.info('http request - %s' % format_request)
+        response = requests.get(format_request)
+        if response.status_code != requests.codes.ok :
+            logging.error('request failed (%d) - %s' % (response.status_code,format_request))
+            return response.status_code
+        json_response = json.loads(response.text)
+        output_formats = json_response['formats']
+        return output_formats
+
+    def get_derived_data_path_single_file(self,patient,execid,analytic,result,format):
+        path_request = '%s/v1/patients/%s/executions/%s/analytics/%s/results/%s/formats/%s' % (self.url,patient,execid,analytic,result,format)
+        logging.info('http request - %s' % path_request)
+        response = requests.get(path_request)
+        if response.status_code != requests.codes.ok :
+            logging.error('request failed (%d) - %s' % (response.status_code,path_request))
+            return response.status_code
+        json_response = json.loads(response.text)
+        output_path = json_response['path']
+        output_file = json_response['filename']
+        return {'path':output_path,'filename':output_file}
+
+
     def radiology_result_execution_exists(self,input_path,executionID):
         inputs = input_path.split('/')
         patient = inputs[inputs.index('Patients')+1]
