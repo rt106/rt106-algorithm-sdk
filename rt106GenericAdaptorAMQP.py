@@ -86,6 +86,18 @@ class DataStore:
         output_path = json_response['path']
         return output_path
 
+    def get_primary_data_elements(self,patient,exam):
+        element_request = '%s/v1/patients/%s/exams/%s/elements' % (self.url,patient,exam)
+        logging.info('http request - %s' % element_request)
+        response = requests.get(element_request)
+        if response.status_code != requests.codes.ok :
+            logging.error('request failed (%d) - %s' % (response.status_code,element_request))
+            return response.status_code
+        json_response = json.loads(response.text)
+        output_formats = json_response['elements']
+        return output_formats
+
+
     def get_primary_data_formats(self,patient,exam,element):
         format_request = '%s/v1/patients/%s/exams/%s/elements/%s/formats' % (self.url,patient,exam,element)
         logging.info('http request - %s' % format_request)
