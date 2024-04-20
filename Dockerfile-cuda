@@ -1,0 +1,41 @@
+# Copyright (c) General Electric Company, 2024.  All rights reserved.
+FROM nvidia/cuda:12.3.2-cudnn9-devel-ubuntu20.04
+
+# Set up certificates
+COPY ca-certificates-bundle-with-GE.crt /usr/local/share/ca-certificates
+RUN chmod 644 /usr/local/share/ca-certificates/ca-certificates-bundle-with-GE.crt && update-ca-certificates
+
+# install Python 3 and Pip 3
+RUN apt-get -y update && apt-get install -y $buildDeps --no-install-recommends \
+    && apt-get install -y python3 python3-pip \
+    && pip install --upgrade pip && hash -r
+
+# install nvidia container toolkit packages  (Is this needed, or does it need to be installed in the outside environment?)
+#RUN apt-get install -y nvidia-container-toolkit
+
+# install needed dependencies for Python 3
+RUN pip install flask pika boto3 requests junit-xml pytest-cov \
+    && pip install --upgrade setuptools
+
+# install SDK
+ADD rt106GenericAdaptorSQS.py rt106GenericAdaptorAMQP.py rt106GenericAdaptorREST.py rt106SpecificAdaptorCode.py rt106SpecificAdaptorDefinitions.json entrypoint.sh testGenericAdaptorAPIs.py testGenericAdaptorAMQP.py /rt106/
+
+# configure folder structures
+RUN mkdir /rt106/input && mkdir /rt106/output && mkdir /rt106/test
+
+# set permissions
+RUN chmod a+x /rt106/entrypoint.sh
+
+# set the working directory
+WORKDIR /rt106
+
+# establish the user
+# create non-privileged user and group
+RUN groupadd -r rt106 && useradd -r -g rt106 rt106 && chown -R rt106:rt106 /rt106
+USER rt106:rt106
+
+# configure the default port for an analytic, can be overridden in entrypoint
+EXPOSE 7106
+
+# entry point
+CMD ["/rt106/entrypoint.sh"]
